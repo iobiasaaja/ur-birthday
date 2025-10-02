@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Happy Birthday Babeb</title>
+    <title>Happy Birthday Babe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       /* Retro helpers */
@@ -78,6 +78,27 @@
         transform: translate(-50%, -250px);
         opacity: 0;
       }
+
+       #bgmToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background: pink;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+    }
+
+    #bgmToggle:hover {
+      transform: scale(1.1);
+    }
     </style>
   </head>
   <body
@@ -161,21 +182,25 @@
                 Sembunyikan Surat
               </button>
             </div>
-          </div>
-          <div class="relative">
-            <div
-              class="aspect-square rounded-[2rem] bg-gradient-to-br from-pink-400 to-violet-500 shadow-2xl p-1"
-            >
-              <div
-                class="w-full h-full rounded-[1.8rem] bg-white/70 dark:bg-black/40 grid place-items-center"
-              >
-                <div class="text-7xl animate-bounce-soft">📼</div>
-              </div>
             </div>
-            <div class="absolute -top-4 -right-2 text-4xl">🎁</div>
-            <div class="absolute -bottom-3 -left-2 text-3xl">🌸</div>
+            <div class="relative">
+              <div class="aspect-square rounded-[2rem] bg-gradient-to-br from-pink-400 to-violet-500 shadow-2xl p-1">
+              <div class="w-full h-full rounded-[1.8rem] bg-white/70 dark:bg-black/40 overflow-hidden">
+                <video
+                autoplay
+                loop
+                muted
+                playsinline
+                class="w-full h-full object-cover"
+                >
+                <source src="mine.mp4" type="video/mp4">
+                </video>
+              </div>
+              </div>
+              <div class="absolute -top-4 -right-2 text-4xl">🎁</div>
+              <div class="absolute -bottom-3 -left-2 text-3xl">🌸</div>
+            </div>
           </div>
-        </div>
       </section>
 
       <section id="memories" class="mx-auto max-w-6xl px-4 mt-16">
@@ -224,7 +249,7 @@
             class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl flex flex-col"
           >
             <div class="text-4xl mb-2">🎆</div>
-            <h4 class="font-bold tracking-wider">Kembang Api Cinta</h4>
+            <h4 class="font-bold tracking-wider">Fireworks</h4>
             <p class="text-sm opacity-80 mb-4">
               Klik roket untuk meluncurkannya dan lihat keajaiban yang terjadi
               di angkasa!
@@ -282,7 +307,7 @@
           <span id="who4">Sayangku</span>. Putar musik retro favoritmu dan baca
           suratnya pelan‑pelan.
         </p>
-        <div class="w-full max-w-md">
+        <!-- <div class="w-full max-w-md">
           <div class="text-left text-xs opacity-70 mb-1">
             Optional BGM (URL .mp3)
           </div>
@@ -299,8 +324,8 @@
               Play
             </button>
           </div>
-          <audio id="bgm" loop class="w-full mt-2 controls" controls></audio>
-        </div>
+          <audio id="bgm" loop class="w-full mt-2 controls hidden" controls></audio>
+        </div> -->
       </div>
     </footer>
 
@@ -339,7 +364,7 @@
       class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4"
     >
       <div
-        class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden"
+        class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-blue-900 shadow-2xl overflow-hidden"
       >
         <div
           class="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10"
@@ -353,7 +378,7 @@
           </button>
         </div>
         <div
-          class="relative p-4 bg-zinc-100 dark:from-zinc-800 dark:to-zinc-900 flex flex-col items-center"
+          class="relative p-4 bg-zinc dark:from-zinc-800 dark:to-zinc-900 flex flex-col items-center"
         >
           <div class="flex justify-between w-full mb-2 text-sm">
             <span>SKOR: <b id="score">0</b></span>
@@ -419,6 +444,13 @@
       class="pointer-events-none fixed inset-0 -z-0 overflow-hidden"
     ></div>
 
+    <audio id="bgm" loop>
+      <source src="hbd.mp3" type="audio/mpeg">
+    Browser kamu tidak support audio.
+    </audio>
+
+    <button id="bgmToggle">▶</button>
+
     <script>
       // SEMUA KODE JAVASCRIPT TETAP SAMA, TIDAK ADA PERUBAHAN
       // ... (tempel semua kode <script> dari file sebelumnya di sini) ...
@@ -438,7 +470,7 @@
       const letterEl = document.getElementById("letter");
       const letterToggle = document.getElementById("letterToggle");
       function renderLetter(name) {
-        const text = `Selamat ulang tahun, ${name}!\n\nTerima kasih sudah hadir di masaku—seperti kaset favorit yang ngulang manisnya setiap diputar.\nDi antara lampu neon dan bising kota, kamu selalu jadi lagu yang paling ingin kudengar.\nSemoga setiap level hidupmu tambah seru, dan kita jadi duo co‑op selamanya. 💿🕹`;
+        const text = `\n\nMy Love, on this day where stars align,\nI send forth a blessing fair and divinely thine.\nMay joy attend your every step, with peace and fortune as your guide.\nHappy Birthday..`;
         typewriter(letterEl, text, 20);
       }
       function typewriter(el, full, speed) {
@@ -578,19 +610,35 @@
       renderQuiz();
 
       // ===== BGM & RETRO & CONFETTI & MODAL HELPERS
-      const bgm = document.getElementById("bgm");
-      const bgmURL = document.getElementById("bgmURL");
-      const bgmToggle = document.getElementById("bgmToggle");
-      bgmToggle.addEventListener("click", () => {
-        if (!bgm.src && bgmURL.value) bgm.src = bgmURL.value;
-        if (bgm.paused) {
-          bgm.play();
-          bgmToggle.textContent = "Pause";
-        } else {
-          bgm.pause();
-          bgmToggle.textContent = "Play";
-        }
+    const bgm = document.getElementById("bgm");
+    const bgmToggle = document.getElementById("bgmToggle");
+
+    // Mulai autoplay (muted biar lolos restriction)
+    document.addEventListener("DOMContentLoaded", () => {
+      bgm.muted = true;
+      bgm.play().then(() => {
+        // jalan muted dulu
+      }).catch(() => {
+        // kalau gagal autoplay, tombol bisa dipakai
       });
+    });
+
+    // Toggle play/pause
+    bgmToggle.addEventListener("click", () => {
+      if (bgm.paused) {
+        bgm.muted = false; // unmute kalau user klik
+        bgm.play();
+        bgmToggle.textContent = "⏸"; // Pause icon
+      } else {
+        bgm.pause();
+        bgmToggle.textContent = "▶"; // Play icon
+      }
+    })
+
+
+
+
+
       const retroToggle = document.getElementById("retroToggle");
       const confettiToggle = document.getElementById("confettiToggle");
       const crtWrap = document.getElementById("crtWrap");
