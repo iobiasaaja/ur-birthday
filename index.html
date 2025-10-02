@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday Babe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Retro helpers */
+      .crt-scan {
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.15) 0 2px,
+          transparent 2px 4px
+        );
+        mix-blend-mode: multiply;
+      }
+      .crt-vignette {
+        background: radial-gradient(
+          circle at center,
+          transparent 40%,
+          rgba(0, 0, 0, 0.4)
+        );
+      }
+      .pixel {
+        text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0);
+          opacity: 0;
+        }
+        30%,
+        70% {
+          opacity: 0.9;
+        }
+        100% {
+          transform: translateY(-120px);
+          opacity: 0;
+        }
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      .animate-bounce-soft {
+        animation: bounce 2s infinite;
+      }
+
+      /* Style untuk Canvas Game */
+      #tetrisCanvas {
+        background: #0f0f13;
+        border: 2px solid #333;
+        border-radius: 8px;
+      }
+      #fireworksContainer {
+        position: relative;
+        background: #0f0f13;
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+      #fireworksLauncher {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2.5rem;
+        cursor: pointer;
+        transition: transform 0.6s cubic-bezier(0.5, 0, 1, 1),
+          opacity 0.5s ease-out;
+      }
+      #fireworksLauncher.launched {
+        transform: translate(-50%, -250px);
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen text-zinc-900 dark:text-zinc-100 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-rose-100 via-white to-violet-100 dark:from-[#1a1a1f] dark:via-[#0f0f13] dark:to-[#0a0a0d]"
+  >
+    <canvas
+      id="confetti"
+      class="pointer-events-none fixed inset-0 z-10 mix-blend-screen opacity-70"
+    ></canvas>
+
+    <header
+      class="sticky top-0 z-20 backdrop-blur bg-white/40 dark:bg-black/30 border-b border-white/20 px-4"
+    >
+      <div class="mx-auto max-w-6xl flex items-center gap-3 py-3">
+        <span class="text-2xl">🎂</span>
+        <h1 class="text-lg font-bold tracking-wider">
+          HBD, <span id="who">Sayangku</span>!
+        </h1>
+        <div class="ml-auto flex items-center gap-2">
+          <button
+            id="retroToggle"
+            class="px-3 py-2 rounded-xl bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20"
+          >
+            Matikan Retro
+          </button>
+          <button
+            id="confettiToggle"
+            class="px-3 py-2 rounded-xl bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20"
+          >
+            Matikan Confetti
+          </button>
+          <a
+            href="#games"
+            class="px-3 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white"
+            >Main Game</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <div id="crtWrap" class="pointer-events-none absolute inset-0 -z-0 hidden">
+      <div class="absolute inset-0 crt-vignette"></div>
+      <div class="absolute inset-0 crt-scan opacity-30"></div>
+    </div>
+    <div
+      id="retroSun"
+      class="pointer-events-none absolute -z-10 inset-0 overflow-hidden hidden"
+    >
+      <div
+        class="absolute left-1/2 -translate-x-1/2 -top-24 w-[520px] h-[520px] rounded-full bg-[radial-gradient(circle_at_center,#ffd46b,transparent_60%)] opacity-60"
+      ></div>
+      <div
+        class="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[1400px] h-[600px] [background-image:linear-gradient(transparent,rgba(255,77,184,0.25)),repeating-linear-gradient(90deg,transparent_0_40px,rgba(255,255,255,0.08)_40px_41px)]"
+      ></div>
+    </div>
+
+    <main>
+      <section id="hero" class="relative mx-auto max-w-6xl px-4 pt-12">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 class="text-3xl sm:text-5xl font-extrabold leading-tight pixel">
+              Selamat Ulang Tahun, <span id="who2">Sayangku</span>!
+              <span class="text-pink-500">💗</span>
+            </h2>
+            <p class="mt-4 opacity-80">
+              Website mini ini aku bikin spesial buat ceweku yang super imut dan
+              cancii in the world!! Semoga hari ini jadi salah satu hari
+              favoritmu sepanjang tahun.
+            </p>
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <input
+                id="nameInput"
+                value="Sayangku"
+                placeholder="Masukkan nama panggilan pacar"
+                class="w-full sm:w-auto rounded-2xl px-4 py-2 bg-white/70 dark:bg-white/10 border border-white/20 focus:outline-none"
+              />
+              <button
+                id="letterToggle"
+                class="rounded-2xl px-4 py-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow"
+              >
+                Sembunyikan Surat
+              </button>
+            </div>
+          </div>
+          <div class="relative">
+            <div
+              class="aspect-square rounded-[2rem] bg-gradient-to-br from-pink-400 to-violet-500 shadow-2xl p-1"
+            >
+              <div
+                class="w-full h-full rounded-[1.8rem] bg-white/70 dark:bg-black/40 grid place-items-center"
+              >
+                <div class="text-7xl animate-bounce-soft">📼</div>
+              </div>
+            </div>
+            <div class="absolute -top-4 -right-2 text-4xl">🎁</div>
+            <div class="absolute -bottom-3 -left-2 text-3xl">🌸</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="memories" class="mx-auto max-w-6xl px-4 mt-16">
+        <div class="grid lg:grid-cols-2 gap-6 items-start">
+          <div
+            class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl"
+          >
+            <h3 class="text-xl font-bold mb-2">
+              💌 Surat untuk <span id="who3">Sayangku</span>
+            </h3>
+            <pre id="letter" class="whitespace-pre-wrap leading-relaxed"></pre>
+          </div>
+          <div
+            class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl"
+          >
+            <h3 class="text-xl font-bold mb-2">📸 Galeri Retro</h3>
+            <div class="flex gap-2 mb-3">
+              <input
+                id="photoURL"
+                placeholder="Tempel URL foto favorit kalian (vibes polaroid/VHS)"
+                class="flex-1 rounded-2xl px-4 py-2 bg-white/70 dark:bg-white/10 border border-white/20 focus:outline-none"
+              />
+              <button
+                id="addPhoto"
+                class="rounded-2xl px-4 py-2 bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white"
+              >
+                Tambah
+              </button>
+            </div>
+            <div
+              id="gallery"
+              class="grid grid-cols-3 sm:grid-cols-4 gap-2"
+            ></div>
+            <p class="mt-3 text-xs opacity-70">
+              Tips: tempel link gambar (Google Photos/Imgur). Mode retro
+              menambah efek scanline & frame polaroid.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="games" class="mx-auto max-w-6xl px-4 mt-16 pb-24">
+        <h3 class="text-2xl font-extrabold mb-6">🎮 Main Bareng</h3>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div
+            class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl flex flex-col"
+          >
+            <div class="text-4xl mb-2">🎆</div>
+            <h4 class="font-bold tracking-wider">Kembang Api Cinta</h4>
+            <p class="text-sm opacity-80 mb-4">
+              Klik roket untuk meluncurkannya dan lihat keajaiban yang terjadi
+              di angkasa!
+            </p>
+            <button
+              id="openFireworks"
+              class="mt-auto rounded-2xl px-4 py-2 bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white shadow"
+            >
+              Mainkan
+            </button>
+          </div>
+          <div
+            class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl flex flex-col"
+          >
+            <div class="text-4xl mb-2">🕹️</div>
+            <h4 class="font-bold tracking-wider">Block Blast</h4>
+            <p class="text-sm opacity-80 mb-4">
+              Susun balok yang jatuh untuk membuat barisan. Bisa dimainkan di
+              HP!
+            </p>
+            <button
+              id="openBlast"
+              class="mt-auto rounded-2xl px-4 py-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow"
+            >
+              Mainkan
+            </button>
+          </div>
+          <div
+            class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl"
+          >
+            <h3 class="text-xl font-bold mb-2">💘 Love Quiz</h3>
+            <div id="quiz"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="border-t border-white/10 py-8 text-center px-4">
+      <div class="flex flex-col items-center gap-3">
+        <div class="flex items-center gap-2 text-[10px] tracking-[0.2em]">
+          <span
+            class="px-2 py-1 rounded bg-black/60 text-white border border-white/20 shadow"
+            >VHS</span
+          >
+          <span
+            class="px-2 py-1 rounded bg-black/60 text-white border border-white/20 shadow"
+            >8‑BIT</span
+          >
+          <span
+            class="px-2 py-1 rounded bg-black/60 text-white border border-white/20 shadow"
+            >MI AMOR</span
+          >
+        </div>
+        <p class="opacity-80">
+          Dibuat dengan <span class="text-pink-500">❤</span> untuk
+          <span id="who4">Sayangku</span>. Putar musik retro favoritmu dan baca
+          suratnya pelan‑pelan.
+        </p>
+        <div class="w-full max-w-md">
+          <div class="text-left text-xs opacity-70 mb-1">
+            Optional BGM (URL .mp3)
+          </div>
+          <div class="flex gap-2">
+            <input
+              id="bgmURL"
+              placeholder="https://.../chiptune.mp3"
+              class="flex-1 rounded-xl px-3 py-2 bg-white/70 dark:bg-white/10 border border-white/20"
+            />
+            <button
+              id="bgmToggle"
+              class="rounded-xl px-3 py-2 bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white"
+            >
+              Play
+            </button>
+          </div>
+          <audio id="bgm" loop class="w-full mt-2 controls" controls></audio>
+        </div>
+      </div>
+    </footer>
+
+    <div
+      id="modalFireworks"
+      class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4"
+    >
+      <div
+        class="relative w-full max-w-3xl rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10"
+        >
+          <h3 class="text-lg font-bold">🎆 Kembang Api Cinta</h3>
+          <button
+            data-close="modalFireworks"
+            class="rounded-full px-3 py-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200"
+          >
+            ✕
+          </button>
+        </div>
+        <div id="fireworksContainer" class="p-4 aspect-video">
+          <canvas
+            id="fireworksCanvas"
+            class="absolute inset-0 w-full h-full"
+          ></canvas>
+          <button id="fireworksLauncher">🚀</button>
+        </div>
+        <div class="px-6 py-4 text-center text-sm opacity-75">
+          Klik roket untuk melihat keajaiban ❤️
+        </div>
+      </div>
+    </div>
+    <div
+      id="modalBlast"
+      class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4"
+    >
+      <div
+        class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10"
+        >
+          <h3 class="text-lg font-bold">🕹️ Mini‑game: Block Blast</h3>
+          <button
+            data-close="modalBlast"
+            class="rounded-full px-3 py-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200"
+          >
+            ✕
+          </button>
+        </div>
+        <div
+          class="relative p-4 bg-zinc-100 dark:from-zinc-800 dark:to-zinc-900 flex flex-col items-center"
+        >
+          <div class="flex justify-between w-full mb-2 text-sm">
+            <span>SKOR: <b id="score">0</b></span>
+            <button
+              id="bbRestart"
+              class="rounded-xl px-3 py-1 bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300"
+            >
+              Ulangi
+            </button>
+          </div>
+          <canvas id="tetrisCanvas"></canvas>
+          <div class="w-full mt-4 grid grid-cols-3 grid-rows-2 gap-2 md:hidden">
+            <button
+              id="btnLeft"
+              class="row-start-2 col-start-1 bg-white/80 dark:bg-white/10 rounded-lg p-3 text-2xl font-bold flex justify-center items-center"
+            >
+              ←
+            </button>
+            <button
+              id="btnRotate"
+              class="row-start-1 col-start-2 bg-white/80 dark:bg-white/10 rounded-lg p-3 text-xl font-bold flex justify-center items-center"
+            >
+              ↻
+            </button>
+            <button
+              id="btnRight"
+              class="row-start-2 col-start-3 bg-white/80 dark:bg-white/10 rounded-lg p-3 text-2xl font-bold flex justify-center items-center"
+            >
+              →
+            </button>
+            <button
+              id="btnDown"
+              class="row-start-2 col-start-2 bg-white/80 dark:bg-white/10 rounded-lg p-3 text-2xl font-bold flex justify-center items-center"
+            >
+              ↓
+            </button>
+          </div>
+          <div
+            id="gameOverPopup"
+            class="absolute inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-6"
+          >
+            <div
+              class="bg-white dark:bg-zinc-800 rounded-2xl p-6 text-center shadow-xl transform transition-all scale-95 opacity-0"
+              id="gameOverPopupContent"
+            >
+              <p class="text-lg mb-4 text-zinc-800 dark:text-zinc-100">
+                Kamu kalah, tapi ngga apa karena kamu selalu menang dihatikuuu
+                🥰
+              </p>
+              <button
+                id="popupRestartBtn"
+                class="w-full rounded-xl px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-bold"
+              >
+                Ulangi Permainan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="floatLayer"
+      class="pointer-events-none fixed inset-0 -z-0 overflow-hidden"
+    ></div>
+
+    <script>
+      // SEMUA KODE JAVASCRIPT TETAP SAMA, TIDAK ADA PERUBAHAN
+      // ... (tempel semua kode <script> dari file sebelumnya di sini) ...
+      // ===== CONFIG & THEME
+      const THEME = {
+        primary: "#ff4db8",
+        secondary: "#00d8d6",
+        accent: "#ffd46b",
+      };
+
+      // ===== NAME & LETTER (typewriter)
+      const nameInput = document.getElementById("nameInput");
+      const who = document.getElementById("who");
+      const who2 = document.getElementById("who2");
+      const who3 = document.getElementById("who3");
+      const who4 = document.getElementById("who4");
+      const letterEl = document.getElementById("letter");
+      const letterToggle = document.getElementById("letterToggle");
+      function renderLetter(name) {
+        const text = `Selamat ulang tahun, ${name}!\n\nTerima kasih sudah hadir di masaku—seperti kaset favorit yang ngulang manisnya setiap diputar.\nDi antara lampu neon dan bising kota, kamu selalu jadi lagu yang paling ingin kudengar.\nSemoga setiap level hidupmu tambah seru, dan kita jadi duo co‑op selamanya. 💿🕹`;
+        typewriter(letterEl, text, 20);
+      }
+      function typewriter(el, full, speed) {
+        el.textContent = "";
+        let i = 0;
+        let intervalId = el.dataset.intervalId;
+        if (intervalId) clearInterval(intervalId);
+        intervalId = setInterval(() => {
+          el.textContent = full.slice(0, ++i);
+          if (i >= full.length) clearInterval(intervalId);
+        }, speed);
+        el.dataset.intervalId = intervalId;
+      }
+      nameInput.addEventListener("input", (e) => {
+        const v = e.target.value || "Sayangku";
+        who.textContent = v;
+        who2.textContent = v;
+        who3.textContent = v;
+        who4.textContent = v;
+      });
+      letterToggle.addEventListener("click", () => {
+        if (letterEl.classList.contains("hidden")) {
+          letterEl.classList.remove("hidden");
+          letterToggle.textContent = "Sembunyikan Surat";
+        } else {
+          letterEl.classList.add("hidden");
+          letterToggle.textContent = "Tampilkan Surat";
+        }
+      });
+      renderLetter(nameInput.value || "Sayangku");
+
+      // ===== GALLERY
+      const photoURL = document.getElementById("photoURL");
+      const addPhoto = document.getElementById("addPhoto");
+      const gallery = document.getElementById("gallery");
+      function polaroid(url) {
+        const wrap = document.createElement("div");
+        wrap.className = "relative aspect-square";
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "foto";
+        img.className = "rounded-lg object-cover w-full h-full";
+        const scan = document.createElement("div");
+        scan.className =
+          "pointer-events-none absolute inset-0 mix-blend-overlay opacity-40 crt-scan";
+        const ring = document.createElement("div");
+        ring.className =
+          "pointer-events-none absolute inset-0 ring-1 ring-black/10 rounded-lg";
+        wrap.append(img, scan, ring);
+        return wrap;
+      }
+      function galleryPlaceholder() {
+        gallery.innerHTML = "";
+        const items = ["🎮", "💾", "📼", "🧸", "🌸", "🎈"];
+        for (let i = 0; i < 6; i++) {
+          const d = document.createElement("div");
+          d.className =
+            "rounded-xl aspect-square bg-gradient-to-br from-white/50 to-white/10 grid place-items-center text-2xl border border-black/5";
+          d.textContent = items[i % items.length];
+          gallery.appendChild(d);
+        }
+      }
+      galleryPlaceholder();
+      addPhoto.addEventListener("click", () => {
+        const url = photoURL.value.trim();
+        if (!url) return;
+        if (gallery.children.length <= 6) gallery.innerHTML = "";
+        gallery.appendChild(polaroid(url));
+        photoURL.value = "";
+      });
+
+      // ===== QUIZ
+      const quizEl = document.getElementById("quiz");
+      const QUESTIONS = [
+        {
+          q: "Kue ulang tahun favorit kamu apa?",
+          a: ["Cokelat", "Keju", "Red Velvet", "Apa aja asal dari kamu 🥰"],
+        },
+        {
+          q: "Kalau jalan bareng, kamu pilih?",
+          a: [
+            "Nonton bioskop",
+            "Jajan street food",
+            "Main game bareng",
+            "Pelukan maraton 😳",
+          ],
+        },
+        {
+          q: "Panggilan sayang paling lucu?",
+          a: ["Babe", "Honey", "Pookie", "Terserah kamu, semuanya manis 😘"],
+        },
+      ];
+      let qIdx = 0,
+        answers = [];
+      function renderQuiz() {
+        quizEl.innerHTML = "";
+        const card = document.createElement("div");
+        if (qIdx < QUESTIONS.length) {
+          const p = document.createElement("p");
+          p.className = "mb-4 font-medium";
+          p.textContent = QUESTIONS[qIdx].q;
+          card.appendChild(p);
+          const grid = document.createElement("div");
+          grid.className = "grid sm:grid-cols-2 gap-3";
+          QUESTIONS[qIdx].a.forEach((opt) => {
+            const b = document.createElement("button");
+            b.className =
+              "rounded-2xl px-4 py-3 bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white hover:opacity-90 shadow";
+            b.textContent = opt;
+            b.onclick = () => {
+              answers.push(opt);
+              qIdx++;
+              renderQuiz();
+            };
+            grid.appendChild(b);
+          });
+          card.appendChild(grid);
+        } else {
+          const p = document.createElement("p");
+          p.className = "text-lg";
+          p.textContent =
+            "Jawaban kamu manis semua~ Kesimpulan: kamu = best girl ♡";
+          card.appendChild(p);
+          const wrap = document.createElement("div");
+          wrap.innerHTML = `<div class="mb-1 text-sm opacity-80">Love Meter</div><div class="w-full h-3 rounded-full bg-white/50 dark:bg-white/10 overflow-hidden"><div id="meter" class="h-full rounded-full bg-gradient-to-r from-pink-500 to-violet-500"></div></div><div id="meterText" class="mt-1 text-xs opacity-70"></div>`;
+          card.appendChild(wrap);
+          const val = Math.min(
+            100,
+            40 + answers.length * 20 + Math.floor(Math.random() * 10)
+          );
+          document.getElementById("meter").style.width = val + "%";
+          document.getElementById("meterText").textContent =
+            val + "% sayang tak terhingga ✨";
+        }
+        quizEl.appendChild(card);
+      }
+      renderQuiz();
+
+      // ===== BGM & RETRO & CONFETTI & MODAL HELPERS
+      const bgm = document.getElementById("bgm");
+      const bgmURL = document.getElementById("bgmURL");
+      const bgmToggle = document.getElementById("bgmToggle");
+      bgmToggle.addEventListener("click", () => {
+        if (!bgm.src && bgmURL.value) bgm.src = bgmURL.value;
+        if (bgm.paused) {
+          bgm.play();
+          bgmToggle.textContent = "Pause";
+        } else {
+          bgm.pause();
+          bgmToggle.textContent = "Play";
+        }
+      });
+      const retroToggle = document.getElementById("retroToggle");
+      const confettiToggle = document.getElementById("confettiToggle");
+      const crtWrap = document.getElementById("crtWrap");
+      const retroSun = document.getElementById("retroSun");
+      const floatLayer = document.getElementById("floatLayer");
+      let retroOn = true;
+      let confettiOn = true;
+      function drawFloating() {
+        floatLayer.innerHTML = "";
+        if (retroOn) {
+          for (let i = 0; i < 48; i++) {
+            const d = document.createElement("div");
+            d.textContent = "✦";
+            d.style.position = "absolute";
+            d.style.left = Math.random() * 100 + "%";
+            d.style.bottom = "0";
+            d.style.fontSize = "10px";
+            d.style.animation = `floatUp ${5 + Math.random() * 4}s ${
+              Math.random() * 6
+            }s infinite ease-in-out`;
+            floatLayer.appendChild(d);
+          }
+        } else {
+          for (let i = 0; i < 16; i++) {
+            const d = document.createElement("div");
+            d.textContent = "💖";
+            d.style.position = "absolute";
+            d.style.left = Math.random() * 100 + "%";
+            d.style.bottom = "0";
+            d.style.fontSize = 14 + Math.random() * 18 + "px";
+            d.style.animation = `floatUp ${6 + Math.random() * 6}s ${
+              Math.random() * 4
+            }s infinite ease-in-out`;
+            floatLayer.appendChild(d);
+          }
+        }
+      }
+      function setRetro(v) {
+        retroOn = v;
+        crtWrap.classList.toggle("hidden", !v);
+        retroSun.classList.toggle("hidden", !v);
+        drawFloating();
+        retroToggle.textContent = v ? "Matikan Retro" : "Nyalakan Retro";
+      }
+      retroToggle.addEventListener("click", () => setRetro(!retroOn));
+      setRetro(true);
+      const confCanvas = document.getElementById("confetti");
+      const confCtx = confCanvas.getContext("2d");
+      let confW = 0,
+        confH = 0;
+      const confPieces = [];
+      function resizeConf() {
+        confW = confCanvas.width = innerWidth;
+        confH = confCanvas.height = Math.max(
+          innerHeight,
+          document.body.scrollHeight
+        );
+      }
+      function spawnConf() {
+        confPieces.length = 0;
+        for (let i = 0; i < 160; i++) {
+          confPieces.push({
+            x: Math.random() * confW,
+            y: Math.random() - confH,
+            r: 4 + Math.random() * 6,
+            c: Math.random() < 0.5 ? THEME.primary : THEME.secondary,
+            v: 1 + Math.random() * 3,
+            a: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+      function stepConf() {
+        if (!confettiOn) {
+          requestAnimationFrame(stepConf);
+          return;
+        }
+        confCtx.clearRect(0, 0, confW, confH);
+        confPieces.forEach((p) => {
+          p.y += p.v;
+          p.x += Math.sin(p.a) * 0.8;
+          p.a += 0.02;
+          if (p.y > confH + 10) {
+            p.y = -10;
+            p.x = Math.random() * confW;
+          }
+          confCtx.fillStyle = p.c;
+          confCtx.beginPath();
+          confCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          confCtx.fill();
+        });
+        requestAnimationFrame(stepConf);
+      }
+      addEventListener("resize", () => {
+        resizeConf();
+        spawnConf();
+      });
+      resizeConf();
+      spawnConf();
+      stepConf();
+      confettiToggle.addEventListener("click", () => {
+        confettiOn = !confettiOn;
+        confettiToggle.textContent = confettiOn
+          ? "Matikan Confetti"
+          : "Nyalakan Confetti";
+      });
+      function openModal(id) {
+        const m = document.getElementById(id);
+        m.classList.remove("hidden");
+        m.classList.add("flex");
+      }
+      function closeModal(id) {
+        const m = document.getElementById(id);
+        m.classList.add("hidden");
+        m.classList.remove("flex");
+      }
+      document
+        .querySelectorAll("[data-close]")
+        .forEach(
+          (b) => (b.onclick = () => closeModal(b.getAttribute("data-close")))
+        );
+
+      // ===========================================
+      // ===== MINI-GAME: Fireworks of Love (Optimal) =====
+      // ===========================================
+      const fwContainer = document.getElementById("fireworksContainer");
+      const fwCanvas = document.getElementById("fireworksCanvas");
+      const fwCtx = fwCanvas.getContext("2d");
+      const openFireworks = document.getElementById("openFireworks");
+      const fwLauncher = document.getElementById("fireworksLauncher");
+      let fwParticles = [];
+      let fwAnimationId;
+      const fwColors = ["#ff4db8", "#ff7d4b", "#ffd46b", "#ff4d4d", "#af4dff"];
+      function setupFireworks() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = fwContainer.getBoundingClientRect();
+        fwCanvas.width = rect.width * dpr;
+        fwCanvas.height = rect.height * dpr;
+        fwCtx.scale(dpr, dpr);
+        fwParticles = [];
+        if (fwAnimationId) cancelAnimationFrame(fwAnimationId);
+        animateFireworks();
+        resetLauncher();
+      }
+      function createHeartExplosion(x, y) {
+        const count = 100;
+        const baseSpeed = fwCanvas.height / 250;
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2;
+          const hx = 16 * Math.pow(Math.sin(angle), 3);
+          const hy = -(
+            13 * Math.cos(angle) -
+            5 * Math.cos(2 * angle) -
+            2 * Math.cos(3 * angle) -
+            Math.cos(4 * angle)
+          );
+          const magnitude = Math.sqrt(hx * hx + hy * hy);
+          const speed = (Math.random() * 0.8 + 0.6) * baseSpeed;
+          fwParticles.push({
+            x: x,
+            y: y,
+            vx: (hx / magnitude) * speed,
+            vy: (hy / magnitude) * speed,
+            color: fwColors[Math.floor(Math.random() * fwColors.length)],
+            size: 1.5 + Math.random() * 1.5,
+            alpha: 1,
+            life: 80 + Math.random() * 40,
+          });
+        }
+      }
+      function animateFireworks() {
+        fwCtx.globalAlpha = 0.2;
+        fwCtx.fillStyle = "#0f0f13";
+        fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+        fwCtx.globalAlpha = 1;
+        for (let i = fwParticles.length - 1; i >= 0; i--) {
+          const p = fwParticles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.03;
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.life -= 1;
+          p.alpha = p.life / 100;
+          if (p.life <= 0) fwParticles.splice(i, 1);
+          else {
+            fwCtx.beginPath();
+            fwCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            fwCtx.globalAlpha = p.alpha;
+            fwCtx.fillStyle = p.color;
+            fwCtx.fill();
+          }
+        }
+        fwCtx.globalAlpha = 1;
+        fwAnimationId = requestAnimationFrame(animateFireworks);
+      }
+      function resetLauncher() {
+        fwLauncher.style.display = "block";
+        fwLauncher.classList.remove("launched");
+      }
+      fwLauncher.addEventListener("click", () => {
+        fwLauncher.classList.add("launched");
+        setTimeout(() => {
+          const rect = fwContainer.getBoundingClientRect();
+          createHeartExplosion(rect.width / 2, rect.height / 3);
+          fwLauncher.style.display = "none";
+          setTimeout(resetLauncher, 2500);
+        }, 600);
+      });
+      openFireworks.addEventListener("click", () => {
+        openModal("modalFireworks");
+        setTimeout(setupFireworks, 50);
+      });
+      document
+        .querySelector('[data-close="modalFireworks"]')
+        .addEventListener("click", () => {
+          cancelAnimationFrame(fwAnimationId);
+          fwAnimationId = null;
+        });
+
+      // ===========================================
+      // ===== MINI-GAME: BLOCK BLAST (TETRIS) =====
+      // ===========================================
+      const canvas = document.getElementById("tetrisCanvas");
+      const context = canvas.getContext("2d");
+      const scoreEl = document.getElementById("score");
+      const gameOverPopup = document.getElementById("gameOverPopup");
+      const gameOverPopupContent = document.getElementById(
+        "gameOverPopupContent"
+      );
+      const popupRestartBtn = document.getElementById("popupRestartBtn");
+      const openBlast = document.getElementById("openBlast");
+      const bbRestart = document.getElementById("bbRestart");
+      const COLS = 10,
+        ROWS = 16,
+        BLOCK_SIZE = 24;
+      canvas.width = COLS * BLOCK_SIZE;
+      canvas.height = ROWS * BLOCK_SIZE;
+      context.scale(BLOCK_SIZE, BLOCK_SIZE);
+      const COLORS = [
+        "#ef4444",
+        "#f97316",
+        "#eab308",
+        "#22c55e",
+        "#06b6d4",
+        "#8b5cf6",
+        "#db2777",
+      ];
+      const SHAPES = [
+        [
+          [0, 0, 0, 0],
+          [1, 1, 1, 1],
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+        ],
+        [
+          [2, 0, 0],
+          [2, 2, 2],
+          [0, 0, 0],
+        ],
+        [
+          [0, 0, 3],
+          [3, 3, 3],
+          [0, 0, 0],
+        ],
+        [
+          [4, 4],
+          [4, 4],
+        ],
+        [
+          [0, 5, 5],
+          [5, 5, 0],
+          [0, 0, 0],
+        ],
+        [
+          [0, 6, 0],
+          [6, 6, 6],
+          [0, 0, 0],
+        ],
+        [
+          [7, 7, 0],
+          [0, 7, 7],
+          [0, 0, 0],
+        ],
+      ];
+      let board,
+        piece,
+        scoreVal,
+        dropCounter,
+        dropInterval,
+        tetrisAnimationId,
+        linesClearedTotal;
+      function createBoard() {
+        return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+      }
+      function newPiece() {
+        const typeId = Math.floor(Math.random() * SHAPES.length);
+        const shape = SHAPES[typeId];
+        const colorId = typeId + 1;
+        piece = {
+          x: Math.floor(COLS / 2) - 1,
+          y: 0,
+          shape: shape,
+          color: colorId,
+        };
+        if (!isValidMove(piece.shape, piece.x, piece.y)) gameOver();
+      }
+      function isValidMove(matrix, offsetX, offsetY) {
+        for (let y = 0; y < matrix.length; ++y)
+          for (let x = 0; x < matrix[y].length; ++x)
+            if (
+              matrix[y][x] !== 0 &&
+              (board[y + offsetY] && board[y + offsetY][x + offsetX]) !== 0
+            )
+              return false;
+        return true;
+      }
+      function lockPiece() {
+        piece.shape.forEach((row, y) =>
+          row.forEach((value, x) => {
+            if (value !== 0) board[y + piece.y][x + piece.x] = piece.color;
+          })
+        );
+      }
+      function clearLines() {
+        let linesCleared = 0;
+        outer: for (let y = ROWS - 1; y >= 0; --y) {
+          for (let x = 0; x < COLS; ++x) if (board[y][x] === 0) continue outer;
+          const row = board.splice(y, 1)[0].fill(0);
+          board.unshift(row);
+          y++;
+          linesCleared++;
+        }
+        if (linesCleared > 0) {
+          scoreVal += linesCleared * 10;
+          linesClearedTotal += linesCleared;
+          if (
+            Math.floor(linesClearedTotal / 5) >
+            Math.floor((linesClearedTotal - linesCleared) / 5)
+          )
+            dropInterval = Math.max(150, dropInterval - 75);
+          scoreEl.textContent = scoreVal;
+        }
+      }
+      function rotate() {
+        const matrix = piece.shape;
+        const N = matrix.length;
+        const result = matrix.map((row, i) =>
+          row.map((val, j) => matrix[N - 1 - j][i])
+        );
+        if (isValidMove(result, piece.x, piece.y)) piece.shape = result;
+      }
+      function pieceDrop() {
+        piece.y++;
+        if (!isValidMove(piece.shape, piece.x, piece.y)) {
+          piece.y--;
+          lockPiece();
+          clearLines();
+          newPiece();
+        }
+        dropCounter = 0;
+      }
+      function draw() {
+        context.fillStyle = "#0f0f13";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        drawMatrix(board, { x: 0, y: 0 });
+        drawMatrix(piece.shape, { x: piece.x, y: piece.y }, piece.color);
+      }
+      function drawMatrix(matrix, offset, colorId) {
+        matrix.forEach((row, y) =>
+          row.forEach((value, x) => {
+            if (value !== 0) {
+              context.fillStyle = COLORS[colorId ? colorId - 1 : value - 1];
+              context.fillRect(x + offset.x, y + offset.y, 0.95, 0.95);
+            }
+          })
+        );
+      }
+      let lastTime = 0;
+      function update(time = 0) {
+        if (!tetrisAnimationId) return;
+        const deltaTime = time - lastTime;
+        lastTime = time;
+        dropCounter += deltaTime;
+        if (dropCounter > dropInterval) pieceDrop();
+        draw();
+        tetrisAnimationId = requestAnimationFrame(update);
+      }
+      function gameOver() {
+        cancelAnimationFrame(tetrisAnimationId);
+        tetrisAnimationId = null;
+        gameOverPopup.classList.remove("hidden");
+        gameOverPopup.classList.add("flex");
+        setTimeout(() => {
+          gameOverPopupContent.classList.remove("scale-95", "opacity-0");
+          gameOverPopupContent.classList.add("scale-100", "opacity-100");
+        }, 10);
+      }
+      function startGame() {
+        gameOverPopupContent.classList.add("scale-95", "opacity-0");
+        gameOverPopup.classList.add("hidden");
+        gameOverPopup.classList.remove("flex");
+        if (tetrisAnimationId) cancelAnimationFrame(tetrisAnimationId);
+        board = createBoard();
+        scoreVal = 0;
+        linesClearedTotal = 0;
+        scoreEl.textContent = "0";
+        dropCounter = 0;
+        dropInterval = 750;
+        newPiece();
+        tetrisAnimationId = requestAnimationFrame(update);
+      }
+      document.addEventListener("keydown", (event) => {
+        if (
+          !tetrisAnimationId ||
+          !document.getElementById("modalBlast").classList.contains("flex")
+        )
+          return;
+        if (event.key === "ArrowLeft") {
+          piece.x--;
+          if (!isValidMove(piece.shape, piece.x, piece.y)) piece.x++;
+        } else if (event.key === "ArrowRight") {
+          piece.x++;
+          if (!isValidMove(piece.shape, piece.x, piece.y)) piece.x--;
+        } else if (event.key === "ArrowDown") {
+          pieceDrop();
+        } else if (event.key === "ArrowUp") {
+          rotate();
+        }
+      });
+      const btnLeft = document.getElementById("btnLeft"),
+        btnRight = document.getElementById("btnRight"),
+        btnRotate = document.getElementById("btnRotate"),
+        btnDown = document.getElementById("btnDown");
+      btnLeft.addEventListener("click", () => {
+        if (tetrisAnimationId) {
+          piece.x--;
+          if (!isValidMove(piece.shape, piece.x, piece.y)) piece.x++;
+        }
+      });
+      btnRight.addEventListener("click", () => {
+        if (tetrisAnimationId) {
+          piece.x++;
+          if (!isValidMove(piece.shape, piece.x, piece.y)) piece.x--;
+        }
+      });
+      btnRotate.addEventListener("click", () => {
+        if (tetrisAnimationId) rotate();
+      });
+      btnDown.addEventListener("click", () => {
+        if (tetrisAnimationId) pieceDrop();
+      });
+      openBlast.addEventListener("click", () => {
+        openModal("modalBlast");
+        startGame();
+      });
+      bbRestart.addEventListener("click", startGame);
+      popupRestartBtn.addEventListener("click", startGame);
+      document
+        .querySelector('[data-close="modalBlast"]')
+        .addEventListener("click", () => {
+          cancelAnimationFrame(tetrisAnimationId);
+          tetrisAnimationId = null;
+        });
+
+      // Close modals on overlay click
+      document
+        .getElementById("modalFireworks")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "modalFireworks") {
+            closeModal("modalFireworks");
+            cancelAnimationFrame(fwAnimationId);
+            fwAnimationId = null;
+          }
+        });
+      document.getElementById("modalBlast").addEventListener("click", (e) => {
+        if (e.target.id === "modalBlast") {
+          closeModal("modalBlast");
+          cancelAnimationFrame(tetrisAnimationId);
+          tetrisAnimationId = null;
+        }
+      });
+    </script>
+  </body>
+</html>
