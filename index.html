@@ -58,47 +58,58 @@
         border: 2px solid #333;
         border-radius: 8px;
       }
-      #fireworksContainer {
-        position: relative;
-        background: #0f0f13;
-        border-radius: 1rem;
-        overflow: hidden;
-      }
-      #fireworksLauncher {
-        position: absolute;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 2.5rem;
+      #puzzleCanvas {
+        border: 2px solid #ff4db8;
+        margin-top: 10px;
         cursor: pointer;
-        transition: transform 0.6s cubic-bezier(0.5, 0, 1, 1),
-          opacity 0.5s ease-out;
+        border-radius: 8px;
       }
-      #fireworksLauncher.launched {
-        transform: translate(-50%, -250px);
-        opacity: 0;
+      #loveAnimation {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 40px;
+        transform: translate(-50%, -50%);
+      }
+      .heart {
+        position: fixed;
+        color: #ff4db8;
+        font-size: 30px;
+        animation: floatUpHeart 2s ease-in forwards;
+        user-select: none;
+        pointer-events: none;
+      }
+      @keyframes floatUpHeart {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-200px);
+        }
       }
 
-       #bgmToggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: none;
-      background: pink;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: transform 0.2s ease;
-    }
-
-    #bgmToggle:hover {
-      transform: scale(1.1);
-    }
+      #bgmToggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: none;
+        background: #ff4db8;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease;
+        z-index: 50;
+      }
+      #bgmToggle:hover {
+        transform: scale(1.1);
+      }
     </style>
   </head>
   <body
@@ -182,25 +193,29 @@
                 Sembunyikan Surat
               </button>
             </div>
-            </div>
-            <div class="relative">
-              <div class="aspect-square rounded-[2rem] bg-gradient-to-br from-pink-400 to-violet-500 shadow-2xl p-1">
-              <div class="w-full h-full rounded-[1.8rem] bg-white/70 dark:bg-black/40 overflow-hidden">
+          </div>
+          <div class="relative">
+            <div
+              class="aspect-square rounded-[2rem] bg-gradient-to-br from-pink-400 to-violet-500 shadow-2xl p-1"
+            >
+              <div
+                class="w-full h-full rounded-[1.8rem] bg-white/70 dark:bg-black/40 overflow-hidden"
+              >
                 <video
-                autoplay
-                loop
-                muted
-                playsinline
-                class="w-full h-full object-cover"
+                  autoplay
+                  loop
+                  muted
+                  playsinline
+                  class="w-full h-full object-cover"
                 >
-                <source src="mine.mp4" type="video/mp4">
+                  <source src="mine.mp4" type="video/mp4" />
                 </video>
               </div>
-              </div>
-              <div class="absolute -top-4 -right-2 text-4xl">🎁</div>
-              <div class="absolute -bottom-3 -left-2 text-3xl">🌸</div>
             </div>
+            <div class="absolute -top-4 -right-2 text-4xl">🎁</div>
+            <div class="absolute -bottom-3 -left-2 text-3xl">🌸</div>
           </div>
+        </div>
       </section>
 
       <section id="memories" class="mx-auto max-w-6xl px-4 mt-16">
@@ -248,14 +263,13 @@
           <div
             class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl flex flex-col"
           >
-            <div class="text-4xl mb-2">🎆</div>
-            <h4 class="font-bold tracking-wider">Fireworks</h4>
+            <div class="text-4xl mb-2">🧩</div>
+            <h4 class="font-bold tracking-wider">Love Puzzle</h4>
             <p class="text-sm opacity-80 mb-4">
-              Klik roket untuk meluncurkannya dan lihat keajaiban yang terjadi
-              di angkasa!
+              Susun potongan gambar untuk membuat foto indah kita berdua!
             </p>
             <button
-              id="openFireworks"
+              id="openPuzzle"
               class="mt-auto rounded-2xl px-4 py-2 bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white shadow"
             >
               Mainkan
@@ -286,6 +300,7 @@
         </div>
       </section>
     </main>
+
     <footer class="border-t border-white/10 py-8 text-center px-4">
       <div class="flex flex-col items-center gap-3">
         <div class="flex items-center gap-2 text-[10px] tracking-[0.2em]">
@@ -307,58 +322,30 @@
           <span id="who4">Sayangku</span>. Putar musik retro favoritmu dan baca
           suratnya pelan‑pelan.
         </p>
-        <!-- <div class="w-full max-w-md">
-          <div class="text-left text-xs opacity-70 mb-1">
-            Optional BGM (URL .mp3)
-          </div>
-          <div class="flex gap-2">
-            <input
-              id="bgmURL"
-              placeholder="https://.../chiptune.mp3"
-              class="flex-1 rounded-xl px-3 py-2 bg-white/70 dark:bg-white/10 border border-white/20"
-            />
-            <button
-              id="bgmToggle"
-              class="rounded-xl px-3 py-2 bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white"
-            >
-              Play
-            </button>
-          </div>
-          <audio id="bgm" loop class="w-full mt-2 controls hidden" controls></audio>
-        </div> -->
       </div>
     </footer>
 
-    <div
-      id="modalFireworks"
-      class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4"
-    >
-      <div
-        class="relative w-full max-w-3xl rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden"
-      >
-        <div
-          class="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10"
-        >
-          <h3 class="text-lg font-bold">🎆 Kembang Api Cinta</h3>
-          <button
-            data-close="modalFireworks"
-            class="rounded-full px-3 py-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200"
-          >
-            ✕
-          </button>
+   <div id="modalPuzzle" class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10">
+                <h3 class="text-lg font-bold">🧩 Mini-game: Love Puzzle</h3>
+                <button data-close="modalPuzzle" class="rounded-full px-3 py-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200">✕</button>
+            </div>
+            <div class="relative p-4 flex flex-col items-center bg-zinc-100 dark:bg-zinc-800">
+                <canvas id="puzzleCanvas"></canvas>
+                
+                <div id="puzzleSolvedPopup" class="absolute inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-6">
+                    <div class="bg-white dark:bg-zinc-800 rounded-2xl p-6 text-center shadow-xl transform transition-all scale-95 opacity-0" id="puzzleSolvedPopupContent">
+                        <p class="text-lg mb-4 text-zinc-800 dark:text-zinc-100">Happy Birthday Babe!!! You complete my heart 💖</p>
+                        <button id="puzzleRestartBtn" class="w-full rounded-xl px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-bold">Ulangi Permainan</button>
+                    </div>
+                </div>
+
+                <div id="loveAnimation" class="hidden"></div>
+            </div>
         </div>
-        <div id="fireworksContainer" class="p-4 aspect-video">
-          <canvas
-            id="fireworksCanvas"
-            class="absolute inset-0 w-full h-full"
-          ></canvas>
-          <button id="fireworksLauncher">🚀</button>
-        </div>
-        <div class="px-6 py-4 text-center text-sm opacity-75">
-          Klik roket untuk melihat keajaiban ❤️
-        </div>
-      </div>
     </div>
+
     <div
       id="modalBlast"
       class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4"
@@ -439,21 +426,15 @@
         </div>
       </div>
     </div>
+
     <div
       id="floatLayer"
       class="pointer-events-none fixed inset-0 -z-0 overflow-hidden"
     ></div>
-
-    <audio id="bgm" loop>
-      <source src="hbd.mp3" type="audio/mpeg">
-    Browser kamu tidak support audio.
-    </audio>
-
+    <audio id="bgm" loop><source src="hbd.mp3" type="audio/mpeg" /></audio>
     <button id="bgmToggle">▶</button>
 
     <script>
-      // SEMUA KODE JAVASCRIPT TETAP SAMA, TIDAK ADA PERUBAHAN
-      // ... (tempel semua kode <script> dari file sebelumnya di sini) ...
       // ===== CONFIG & THEME
       const THEME = {
         primary: "#ff4db8",
@@ -461,7 +442,7 @@
         accent: "#ffd46b",
       };
 
-      // ===== NAME & LETTER (typewriter)
+      // ===== NAME & LETTER
       const nameInput = document.getElementById("nameInput");
       const who = document.getElementById("who");
       const who2 = document.getElementById("who2");
@@ -610,35 +591,22 @@
       renderQuiz();
 
       // ===== BGM & RETRO & CONFETTI & MODAL HELPERS
-    const bgm = document.getElementById("bgm");
-    const bgmToggle = document.getElementById("bgmToggle");
-
-    // Mulai autoplay (muted biar lolos restriction)
-    document.addEventListener("DOMContentLoaded", () => {
-      bgm.muted = true;
-      bgm.play().then(() => {
-        // jalan muted dulu
-      }).catch(() => {
-        // kalau gagal autoplay, tombol bisa dipakai
+      const bgm = document.getElementById("bgm");
+      const bgmToggle = document.getElementById("bgmToggle");
+      document.addEventListener("DOMContentLoaded", () => {
+        bgm.muted = true;
+        bgm.play().catch(() => {});
       });
-    });
-
-    // Toggle play/pause
-    bgmToggle.addEventListener("click", () => {
-      if (bgm.paused) {
-        bgm.muted = false; // unmute kalau user klik
-        bgm.play();
-        bgmToggle.textContent = "⏸"; // Pause icon
-      } else {
-        bgm.pause();
-        bgmToggle.textContent = "▶"; // Play icon
-      }
-    })
-
-
-
-
-
+      bgmToggle.addEventListener("click", () => {
+        if (bgm.paused) {
+          bgm.muted = false;
+          bgm.play();
+          bgmToggle.textContent = "⏸";
+        } else {
+          bgm.pause();
+          bgmToggle.textContent = "▶";
+        }
+      });
       const retroToggle = document.getElementById("retroToggle");
       const confettiToggle = document.getElementById("confettiToggle");
       const crtWrap = document.getElementById("crtWrap");
@@ -760,107 +728,159 @@
           (b) => (b.onclick = () => closeModal(b.getAttribute("data-close")))
         );
 
-      // ===========================================
-      // ===== MINI-GAME: Fireworks of Love (Optimal) =====
-      // ===========================================
-      const fwContainer = document.getElementById("fireworksContainer");
-      const fwCanvas = document.getElementById("fireworksCanvas");
-      const fwCtx = fwCanvas.getContext("2d");
-      const openFireworks = document.getElementById("openFireworks");
-      const fwLauncher = document.getElementById("fireworksLauncher");
-      let fwParticles = [];
-      let fwAnimationId;
-      const fwColors = ["#ff4db8", "#ff7d4b", "#ffd46b", "#ff4d4d", "#af4dff"];
-      function setupFireworks() {
-        const dpr = window.devicePixelRatio || 1;
-        const rect = fwContainer.getBoundingClientRect();
-        fwCanvas.width = rect.width * dpr;
-        fwCanvas.height = rect.height * dpr;
-        fwCtx.scale(dpr, dpr);
-        fwParticles = [];
-        if (fwAnimationId) cancelAnimationFrame(fwAnimationId);
-        animateFireworks();
-        resetLauncher();
-      }
-      function createHeartExplosion(x, y) {
-        const count = 100;
-        const baseSpeed = fwCanvas.height / 250;
-        for (let i = 0; i < count; i++) {
-          const angle = (i / count) * Math.PI * 2;
-          const hx = 16 * Math.pow(Math.sin(angle), 3);
-          const hy = -(
-            13 * Math.cos(angle) -
-            5 * Math.cos(2 * angle) -
-            2 * Math.cos(3 * angle) -
-            Math.cos(4 * angle)
-          );
-          const magnitude = Math.sqrt(hx * hx + hy * hy);
-          const speed = (Math.random() * 0.8 + 0.6) * baseSpeed;
-          fwParticles.push({
-            x: x,
-            y: y,
-            vx: (hx / magnitude) * speed,
-            vy: (hy / magnitude) * speed,
-            color: fwColors[Math.floor(Math.random() * fwColors.length)],
-            size: 1.5 + Math.random() * 1.5,
-            alpha: 1,
-            life: 80 + Math.random() * 40,
-          });
-        }
-      }
-      function animateFireworks() {
-        fwCtx.globalAlpha = 0.2;
-        fwCtx.fillStyle = "#0f0f13";
-        fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
-        fwCtx.globalAlpha = 1;
-        for (let i = fwParticles.length - 1; i >= 0; i--) {
-          const p = fwParticles[i];
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += 0.03;
-          p.vx *= 0.98;
-          p.vy *= 0.98;
-          p.life -= 1;
-          p.alpha = p.life / 100;
-          if (p.life <= 0) fwParticles.splice(i, 1);
-          else {
-            fwCtx.beginPath();
-            fwCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            fwCtx.globalAlpha = p.alpha;
-            fwCtx.fillStyle = p.color;
-            fwCtx.fill();
-          }
-        }
-        fwCtx.globalAlpha = 1;
-        fwAnimationId = requestAnimationFrame(animateFireworks);
-      }
-      function resetLauncher() {
-        fwLauncher.style.display = "block";
-        fwLauncher.classList.remove("launched");
-      }
-      fwLauncher.addEventListener("click", () => {
-        fwLauncher.classList.add("launched");
-        setTimeout(() => {
-          const rect = fwContainer.getBoundingClientRect();
-          createHeartExplosion(rect.width / 2, rect.height / 3);
-          fwLauncher.style.display = "none";
-          setTimeout(resetLauncher, 2500);
-        }, 600);
-      });
-      openFireworks.addEventListener("click", () => {
-        openModal("modalFireworks");
-        setTimeout(setupFireworks, 50);
-      });
-      document
-        .querySelector('[data-close="modalFireworks"]')
-        .addEventListener("click", () => {
-          cancelAnimationFrame(fwAnimationId);
-          fwAnimationId = null;
-        });
+    // ===== PUZZLE GAME (VERSI FINAL DENGAN POPUP) =====
+      const openPuzzle = document.getElementById("openPuzzle");
+      const puzzleCanvas = document.getElementById("puzzleCanvas");
+      const ctx = puzzleCanvas.getContext("2d");
+      const loveAnimation = document.getElementById("loveAnimation");
+      const puzzleSolvedPopup = document.getElementById("puzzleSolvedPopup");
+      const puzzleSolvedPopupContent = document.getElementById("puzzleSolvedPopupContent");
+      const puzzleRestartBtn = document.getElementById("puzzleRestartBtn");
+      
+      const PUZZLE_ROWS = 3;
+      const PUZZLE_COLS = 3;
+      
+      let pieces = [];
+      let img = new Image();
+      img.src = "my-istri.jpg"; // 👉 PASTIKAN NAMA FILE INI SESUAI DENGAN FOTOMU
+      
+      let pieceW, pieceH;
+      let sourcePieceW, sourcePieceH;
+      let selected = null;
+      let isSolved = false;
 
-      // ===========================================
-      // ===== MINI-GAME: BLOCK BLAST (TETRIS) =====
-      // ===========================================
+      function initPuzzle() {
+        isSolved = false;
+        // Sembunyikan popup saat game dimulai/diulang
+        puzzleSolvedPopup.classList.add("hidden");
+        puzzleSolvedPopup.classList.remove("flex");
+        puzzleSolvedPopupContent.classList.add("scale-95", "opacity-0");
+        
+        // Atur ukuran canvas agar proporsional (potrait)
+        puzzleCanvas.width = 300;
+        puzzleCanvas.height = 400;
+
+        pieceW = puzzleCanvas.width / PUZZLE_COLS;
+        pieceH = puzzleCanvas.height / PUZZLE_ROWS;
+        
+        sourcePieceW = img.width / PUZZLE_COLS;
+        sourcePieceH = img.height / PUZZLE_ROWS;
+
+        pieces = [];
+        for (let i = 0; i < PUZZLE_ROWS * PUZZLE_COLS; i++) {
+          pieces.push(i);
+        }
+        
+        shuffle(pieces);
+        drawPuzzle();
+      }
+
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        if (pieces.every((p, i) => p === i)) {
+            shuffle(array);
+        }
+      }
+
+      function drawPuzzle() {
+        ctx.clearRect(0, 0, puzzleCanvas.width, puzzleCanvas.height);
+        
+        for (let i = 0; i < pieces.length; i++) {
+            let currentGridIndex = i;
+            let sourceImageIndex = pieces[i];
+            let gridCol = currentGridIndex % PUZZLE_COLS;
+            let gridRow = Math.floor(currentGridIndex / PUZZLE_COLS);
+            let sourceCol = sourceImageIndex % PUZZLE_COLS;
+            let sourceRow = Math.floor(sourceImageIndex / PUZZLE_ROWS);
+            
+            ctx.drawImage(img, sourceCol * sourcePieceW, sourceRow * sourcePieceH, sourcePieceW, sourcePieceH, gridCol * pieceW, gridRow * pieceH, pieceW, pieceH);
+            
+            if (!isSolved) {
+              ctx.strokeStyle = "#ff4db8";
+              ctx.lineWidth = 1;
+              ctx.strokeRect(gridCol * pieceW, gridRow * pieceH, pieceW, pieceH);
+            }
+        }
+
+        if (selected !== null && !isSolved) {
+            let r = Math.floor(selected / PUZZLE_COLS);
+            let c = selected % PUZZLE_COLS;
+            ctx.strokeStyle = "yellow";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(c * pieceW, r * pieceH, pieceW, pieceH);
+        }
+      }
+
+      function swapPieces(i1, i2) {
+        [pieces[i1], pieces[i2]] = [pieces[i2], pieces[i1]];
+        drawPuzzle();
+        checkSolved();
+      }
+
+      function checkSolved() {
+        isSolved = pieces.every((p, idx) => p === idx);
+        if (isSolved) {
+          drawPuzzle(); 
+          showHearts();
+          
+          // Tampilkan popup
+          puzzleSolvedPopup.classList.remove("hidden");
+          puzzleSolvedPopup.classList.add("flex");
+          setTimeout(() => {
+            puzzleSolvedPopupContent.classList.remove("scale-95", "opacity-0");
+            puzzleSolvedPopupContent.classList.add("scale-100", "opacity-100");
+          }, 10);
+        }
+      }
+
+      function showHearts() {
+        loveAnimation.classList.remove("hidden");
+        for (let i = 0; i < 30; i++) {
+          let heart = document.createElement("div"); heart.className = "heart"; heart.textContent = "💖";
+          heart.style.left = Math.random() * window.innerWidth + "px";
+          heart.style.top = Math.random() * window.innerHeight + "px";
+          document.body.appendChild(heart);
+          setTimeout(() => heart.remove(), 2000);
+        }
+      }
+
+      puzzleCanvas.addEventListener("click", (e) => {
+        if (isSolved) return;
+        const rect = puzzleCanvas.getBoundingClientRect();
+        let x = e.clientX - rect.left; let y = e.clientY - rect.top;
+        let c = Math.floor(x / pieceW); let r = Math.floor(y / pieceH);
+        let idx = r * PUZZLE_COLS + c;
+
+        if (selected === null) {
+          selected = idx;
+          drawPuzzle();
+        } else {
+          if (selected !== idx) {
+            swapPieces(selected, idx);
+          }
+          selected = null;
+          drawPuzzle();
+        }
+      });
+      
+      puzzleRestartBtn.addEventListener('click', initPuzzle);
+
+      openPuzzle.addEventListener("click", () => {
+        openModal("modalPuzzle");
+        if (img.complete) { initPuzzle(); } 
+        else { img.onload = initPuzzle; }
+      });
+      document.querySelector('[data-close="modalPuzzle"]').addEventListener("click", () => {
+        loveAnimation.classList.add("hidden");
+      });
+
+
+
+
+      // ===== BLOCK BLAST (TETRIS)
       const canvas = document.getElementById("tetrisCanvas");
       const context = canvas.getContext("2d");
       const scoreEl = document.getElementById("score");
@@ -1101,17 +1121,6 @@
         .addEventListener("click", () => {
           cancelAnimationFrame(tetrisAnimationId);
           tetrisAnimationId = null;
-        });
-
-      // Close modals on overlay click
-      document
-        .getElementById("modalFireworks")
-        .addEventListener("click", (e) => {
-          if (e.target.id === "modalFireworks") {
-            closeModal("modalFireworks");
-            cancelAnimationFrame(fwAnimationId);
-            fwAnimationId = null;
-          }
         });
       document.getElementById("modalBlast").addEventListener("click", (e) => {
         if (e.target.id === "modalBlast") {
