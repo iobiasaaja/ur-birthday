@@ -228,33 +228,11 @@
             </h3>
             <pre id="letter" class="whitespace-pre-wrap leading-relaxed"></pre>
           </div>
-          <div
-            class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl"
-          >
-            <h3 class="text-xl font-bold mb-2">📸 Galeri Retro</h3>
-            <div class="flex gap-2 mb-3">
-              <input
-                id="photoURL"
-                placeholder="Tempel URL foto favorit kalian (vibes polaroid/VHS)"
-                class="flex-1 rounded-2xl px-4 py-2 bg-white/70 dark:bg-white/10 border border-white/20 focus:outline-none"
-              />
-              <button
-                id="addPhoto"
-                class="rounded-2xl px-4 py-2 bg-gradient-to-r from-rose-500 to-fuchsia-500 text-white"
-              >
-                Tambah
-              </button>
-            </div>
-            <div
-              id="gallery"
-              class="grid grid-cols-3 sm:grid-cols-4 gap-2"
-            ></div>
-            <p class="mt-3 text-xs opacity-70">
-              Tips: tempel link gambar (Google Photos/Imgur). Mode retro
-              menambah efek scanline & frame polaroid.
-            </p>
-          </div>
-        </div>
+         <div class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl">
+        <h3 class="text-xl font-bold mb-2">📸 Galeri Retro</h3>
+        <div id="gallery" class="grid grid-cols-3 sm:grid-cols-4 gap-2"></div>
+        <p class="mt-3 text-xs opacity-70">Kenangan kita dalam frame retro ✨</p>
+      </div>
       </section>
 
       <section id="games" class="mx-auto max-w-6xl px-4 mt-16 pb-24">
@@ -483,45 +461,48 @@
       });
       renderLetter(nameInput.value || "Sayangku");
 
-      // ===== GALLERY
-      const photoURL = document.getElementById("photoURL");
-      const addPhoto = document.getElementById("addPhoto");
-      const gallery = document.getElementById("gallery");
+     // ===== GALLERY (VERSI BARU DENGAN 9 FOTO STATIS) =====
+      const gallery = document.getElementById('gallery');
+
+      // Helper function untuk membuat frame polaroid (ini jangan dihapus)
       function polaroid(url) {
-        const wrap = document.createElement("div");
-        wrap.className = "relative aspect-square";
-        const img = document.createElement("img");
+        const wrap = document.createElement('div');
+        wrap.className = 'relative aspect-square';
+        const img = document.createElement('img');
         img.src = url;
-        img.alt = "foto";
-        img.className = "rounded-lg object-cover w-full h-full";
-        const scan = document.createElement("div");
-        scan.className =
-          "pointer-events-none absolute inset-0 mix-blend-overlay opacity-40 crt-scan";
-        const ring = document.createElement("div");
-        ring.className =
-          "pointer-events-none absolute inset-0 ring-1 ring-black/10 rounded-lg";
+        img.alt = 'foto kenangan';
+        img.className = 'rounded-lg object-cover w-full h-full';
+        const scan = document.createElement('div');
+        scan.className = 'pointer-events-none absolute inset-0 mix-blend-overlay opacity-40 crt-scan';
+        const ring = document.createElement('div');
+        ring.className = 'pointer-events-none absolute inset-0 ring-1 ring-black/10 rounded-lg';
         wrap.append(img, scan, ring);
         return wrap;
       }
-      function galleryPlaceholder() {
-        gallery.innerHTML = "";
-        const items = ["🎮", "💾", "📼", "🧸", "🌸", "🎈"];
-        for (let i = 0; i < 6; i++) {
-          const d = document.createElement("div");
-          d.className =
-            "rounded-xl aspect-square bg-gradient-to-br from-white/50 to-white/10 grid place-items-center text-2xl border border-black/5";
-          d.textContent = items[i % items.length];
-          gallery.appendChild(d);
-        }
+
+      // --- TUGASMU: GANTI URL DI BAWAH INI DENGAN 9 LINK FOTOMU ---
+      const daftarFoto = [
+        "img/pt1.jpg", // Ganti dengan URL fotomu
+        "img/pt2.jpg", // Ganti dengan URL fotomu
+        "img/pt3.jpg", // Ganti dengan URL fotomu
+        "img/pt4.jpg", // Ganti dengan URL fotomu
+        "img/pt5.jpg", // Ganti dengan URL fotomu
+        "img/pt6.jpg", // Ganti dengan URL fotomu
+        "img/pt7.jpg", // Ganti dengan URL fotomu
+        "img/pt8.jpg", // Ganti dengan URL fotomu
+        "img/pt9.jpg", // Ganti dengan URL fotomu 
+      ];
+      // --- BATAS TUGASMU ---
+
+      function renderGallery() {
+        gallery.innerHTML = ''; // Kosongkan galeri
+        daftarFoto.forEach(url => {
+          gallery.appendChild(polaroid(url));
+        });
       }
-      galleryPlaceholder();
-      addPhoto.addEventListener("click", () => {
-        const url = photoURL.value.trim();
-        if (!url) return;
-        if (gallery.children.length <= 6) gallery.innerHTML = "";
-        gallery.appendChild(polaroid(url));
-        photoURL.value = "";
-      });
+
+      // Panggil fungsi ini untuk menampilkan 9 fotomu saat halaman dimuat
+      renderGallery();
 
       // ===== QUIZ
       const quizEl = document.getElementById("quiz");
