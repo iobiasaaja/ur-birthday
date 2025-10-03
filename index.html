@@ -228,11 +228,19 @@
             </h3>
             <pre id="letter" class="whitespace-pre-wrap leading-relaxed"></pre>
           </div>
-         <div class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl">
-        <h3 class="text-xl font-bold mb-2">📸 Galeri Retro</h3>
-        <div id="gallery" class="grid grid-cols-3 sm:grid-cols-4 gap-2"></div>
-        <p class="mt-3 text-xs opacity-70">Kenangan kita dalam frame retro ✨</p>
-      </div>
+          <div
+            class="rounded-3xl border border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur p-6 shadow-xl"
+          >
+            <h3 class="text-xl font-bold mb-2">📸 Galeri Retro</h3>
+            <div
+              id="gallery"
+              class="grid grid-cols-3 sm:grid-cols-4 gap-2"
+            ></div>
+            <p class="mt-3 text-xs opacity-70">
+              Kenangan kita dalam frame retro ✨
+            </p>
+          </div>
+        </div>
       </section>
 
       <section id="games" class="mx-auto max-w-6xl px-4 mt-16 pb-24">
@@ -303,25 +311,41 @@
       </div>
     </footer>
 
-   <div id="modalPuzzle" class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10">
-                <h3 class="text-lg font-bold">🧩 Mini-game: Love Puzzle</h3>
-                <button data-close="modalPuzzle" class="rounded-full px-3 py-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200">✕</button>
-            </div>
-            <div class="relative p-4 flex flex-col items-center bg-zinc-100 dark:bg-zinc-800">
-                <canvas id="puzzleCanvas"></canvas>
-                
-                <div id="puzzleSolvedPopup" class="absolute inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-6">
-                    <div class="bg-white dark:bg-zinc-800 rounded-2xl p-6 text-center shadow-xl transform transition-all scale-95 opacity-0" id="puzzleSolvedPopupContent">
-                        <p class="text-lg mb-4 text-zinc-800 dark:text-zinc-100">Happy Birthday Babe!!! You complete my heart 💖</p>
-                        <button id="puzzleRestartBtn" class="w-full rounded-xl px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-bold">Ulangi Permainan</button>
-                    </div>
-                </div>
-
-                <div id="loveAnimation" class="hidden"></div>
-            </div>
+    <div
+      id="modalPuzzle"
+      class="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4"
+    >
+      <div
+        class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10"
+        >
+          <h3 class="text-lg font-bold">🧩 Mini-game: Love Puzzle</h3>
+          <button
+            data-close="modalPuzzle"
+            class="rounded-full px-3 py-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200"
+          >
+            ✕
+          </button>
         </div>
+        <div
+          class="p-4 flex flex-col items-center bg-zinc-100 dark:bg-zinc-800"
+        >
+          <canvas id="puzzleCanvas"></canvas>
+          <p
+            id="puzzleMessage"
+            class="hidden text-base text-center mt-4 h-12 font-bold text-pink-500"
+          ></p>
+          <button
+            id="puzzleRestartBtn"
+            class="hidden w-full mt-2 rounded-xl px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-bold"
+          >
+            Ulangi Permainan
+          </button>
+          <div id="loveAnimation" class="hidden"></div>
+        </div>
+      </div>
     </div>
 
     <div
@@ -461,47 +485,41 @@
       });
       renderLetter(nameInput.value || "Sayangku");
 
-     // ===== GALLERY (VERSI BARU DENGAN 9 FOTO STATIS) =====
-      const gallery = document.getElementById('gallery');
-
-      // Helper function untuk membuat frame polaroid (ini jangan dihapus)
+      // ===== GALLERY
+      const gallery = document.getElementById("gallery");
       function polaroid(url) {
-        const wrap = document.createElement('div');
-        wrap.className = 'relative aspect-square';
-        const img = document.createElement('img');
+        const wrap = document.createElement("div");
+        wrap.className = "relative aspect-square";
+        const img = document.createElement("img");
         img.src = url;
-        img.alt = 'foto kenangan';
-        img.className = 'rounded-lg object-cover w-full h-full';
-        const scan = document.createElement('div');
-        scan.className = 'pointer-events-none absolute inset-0 mix-blend-overlay opacity-40 crt-scan';
-        const ring = document.createElement('div');
-        ring.className = 'pointer-events-none absolute inset-0 ring-1 ring-black/10 rounded-lg';
+        img.alt = "foto kenangan";
+        img.className = "rounded-lg object-cover w-full h-full";
+        const scan = document.createElement("div");
+        scan.className =
+          "pointer-events-none absolute inset-0 mix-blend-overlay opacity-40 crt-scan";
+        const ring = document.createElement("div");
+        ring.className =
+          "pointer-events-none absolute inset-0 ring-1 ring-black/10 rounded-lg";
         wrap.append(img, scan, ring);
         return wrap;
       }
-
-      // --- TUGASMU: GANTI URL DI BAWAH INI DENGAN 9 LINK FOTOMU ---
       const daftarFoto = [
-        "img/pt1.jpg", // Ganti dengan URL fotomu
-        "img/pt2.jpg", // Ganti dengan URL fotomu
-        "img/pt3.jpg", // Ganti dengan URL fotomu
-        "img/pt4.jpg", // Ganti dengan URL fotomu
-        "img/pt5.jpg", // Ganti dengan URL fotomu
-        "img/pt6.jpg", // Ganti dengan URL fotomu
-        "img/pt7.jpg", // Ganti dengan URL fotomu
-        "img/pt8.jpg", // Ganti dengan URL fotomu
-        "img/pt9.jpg", // Ganti dengan URL fotomu 
+        "img/pt1.jpg",  
+        "img/pt2.jpg",  
+        "img/pt3.jpg",  
+        "img/pt4.jpg",
+        "img/pt5.jpg",
+        "img/pt6.jpg",
+        "img/pt7.jpg",
+        "img/pt8.jpg",
+        "img/pt9.jpg",
       ];
-      // --- BATAS TUGASMU ---
-
       function renderGallery() {
-        gallery.innerHTML = ''; // Kosongkan galeri
-        daftarFoto.forEach(url => {
+        gallery.innerHTML = "";
+        daftarFoto.forEach((url) => {
           gallery.appendChild(polaroid(url));
         });
       }
-
-      // Panggil fungsi ini untuk menampilkan 9 fotomu saat halaman dimuat
       renderGallery();
 
       // ===== QUIZ
@@ -709,22 +727,21 @@
           (b) => (b.onclick = () => closeModal(b.getAttribute("data-close")))
         );
 
-    // ===== PUZZLE GAME (VERSI FINAL DENGAN POPUP) =====
+      // ===== PUZZLE GAME (VERSI TEXT MESSAGE + RESTART BUTTON) =====
       const openPuzzle = document.getElementById("openPuzzle");
       const puzzleCanvas = document.getElementById("puzzleCanvas");
       const ctx = puzzleCanvas.getContext("2d");
-      const loveAnimation = document.getElementById("loveAnimation");
-      const puzzleSolvedPopup = document.getElementById("puzzleSolvedPopup");
-      const puzzleSolvedPopupContent = document.getElementById("puzzleSolvedPopupContent");
+      const puzzleMessage = document.getElementById("puzzleMessage");
       const puzzleRestartBtn = document.getElementById("puzzleRestartBtn");
-      
+      const loveAnimation = document.getElementById("loveAnimation");
+
       const PUZZLE_ROWS = 3;
       const PUZZLE_COLS = 3;
-      
+
       let pieces = [];
       let img = new Image();
-      img.src = "my-istri.jpg"; // 👉 PASTIKAN NAMA FILE INI SESUAI DENGAN FOTOMU
-      
+      img.src = "my-istri.jpg";
+
       let pieceW, pieceH;
       let sourcePieceW, sourcePieceH;
       let selected = null;
@@ -732,18 +749,15 @@
 
       function initPuzzle() {
         isSolved = false;
-        // Sembunyikan popup saat game dimulai/diulang
-        puzzleSolvedPopup.classList.add("hidden");
-        puzzleSolvedPopup.classList.remove("flex");
-        puzzleSolvedPopupContent.classList.add("scale-95", "opacity-0");
-        
-        // Atur ukuran canvas agar proporsional (potrait)
+        puzzleMessage.classList.add("hidden");
+        puzzleRestartBtn.classList.add("hidden");
+
         puzzleCanvas.width = 300;
         puzzleCanvas.height = 400;
 
         pieceW = puzzleCanvas.width / PUZZLE_COLS;
         pieceH = puzzleCanvas.height / PUZZLE_ROWS;
-        
+
         sourcePieceW = img.width / PUZZLE_COLS;
         sourcePieceH = img.height / PUZZLE_ROWS;
 
@@ -751,7 +765,7 @@
         for (let i = 0; i < PUZZLE_ROWS * PUZZLE_COLS; i++) {
           pieces.push(i);
         }
-        
+
         shuffle(pieces);
         drawPuzzle();
       }
@@ -762,36 +776,46 @@
           [array[i], array[j]] = [array[j], array[i]];
         }
         if (pieces.every((p, i) => p === i)) {
-            shuffle(array);
+          shuffle(array);
         }
       }
 
       function drawPuzzle() {
         ctx.clearRect(0, 0, puzzleCanvas.width, puzzleCanvas.height);
-        
+
         for (let i = 0; i < pieces.length; i++) {
-            let currentGridIndex = i;
-            let sourceImageIndex = pieces[i];
-            let gridCol = currentGridIndex % PUZZLE_COLS;
-            let gridRow = Math.floor(currentGridIndex / PUZZLE_COLS);
-            let sourceCol = sourceImageIndex % PUZZLE_COLS;
-            let sourceRow = Math.floor(sourceImageIndex / PUZZLE_ROWS);
-            
-            ctx.drawImage(img, sourceCol * sourcePieceW, sourceRow * sourcePieceH, sourcePieceW, sourcePieceH, gridCol * pieceW, gridRow * pieceH, pieceW, pieceH);
-            
-            if (!isSolved) {
-              ctx.strokeStyle = "#ff4db8";
-              ctx.lineWidth = 1;
-              ctx.strokeRect(gridCol * pieceW, gridRow * pieceH, pieceW, pieceH);
-            }
+          let currentGridIndex = i;
+          let sourceImageIndex = pieces[i];
+          let gridCol = currentGridIndex % PUZZLE_COLS;
+          let gridRow = Math.floor(currentGridIndex / PUZZLE_COLS);
+          let sourceCol = sourceImageIndex % PUZZLE_COLS;
+          let sourceRow = Math.floor(sourceImageIndex / PUZZLE_ROWS);
+
+          ctx.drawImage(
+            img,
+            sourceCol * sourcePieceW,
+            sourceRow * sourcePieceH,
+            sourcePieceW,
+            sourcePieceH,
+            gridCol * pieceW,
+            gridRow * pieceH,
+            pieceW,
+            pieceH
+          );
+
+          if (!isSolved) {
+            ctx.strokeStyle = "#ff4db8";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(gridCol * pieceW, gridRow * pieceH, pieceW, pieceH);
+          }
         }
 
         if (selected !== null && !isSolved) {
-            let r = Math.floor(selected / PUZZLE_COLS);
-            let c = selected % PUZZLE_COLS;
-            ctx.strokeStyle = "yellow";
-            ctx.lineWidth = 4;
-            ctx.strokeRect(c * pieceW, r * pieceH, pieceW, pieceH);
+          let r = Math.floor(selected / PUZZLE_COLS);
+          let c = selected % PUZZLE_COLS;
+          ctx.strokeStyle = "yellow";
+          ctx.lineWidth = 4;
+          ctx.strokeRect(c * pieceW, r * pieceH, pieceW, pieceH);
         }
       }
 
@@ -804,23 +828,22 @@
       function checkSolved() {
         isSolved = pieces.every((p, idx) => p === idx);
         if (isSolved) {
-          drawPuzzle(); 
+          drawPuzzle();
           showHearts();
-          
-          // Tampilkan popup
-          puzzleSolvedPopup.classList.remove("hidden");
-          puzzleSolvedPopup.classList.add("flex");
-          setTimeout(() => {
-            puzzleSolvedPopupContent.classList.remove("scale-95", "opacity-0");
-            puzzleSolvedPopupContent.classList.add("scale-100", "opacity-100");
-          }, 10);
+
+          puzzleMessage.textContent =
+            "Happy Birthday Babe!!! You complete my heart 💖";
+          puzzleMessage.classList.remove("hidden");
+          puzzleRestartBtn.classList.remove("hidden");
         }
       }
 
       function showHearts() {
         loveAnimation.classList.remove("hidden");
         for (let i = 0; i < 30; i++) {
-          let heart = document.createElement("div"); heart.className = "heart"; heart.textContent = "💖";
+          let heart = document.createElement("div");
+          heart.className = "heart";
+          heart.textContent = "💖";
           heart.style.left = Math.random() * window.innerWidth + "px";
           heart.style.top = Math.random() * window.innerHeight + "px";
           document.body.appendChild(heart);
@@ -831,8 +854,10 @@
       puzzleCanvas.addEventListener("click", (e) => {
         if (isSolved) return;
         const rect = puzzleCanvas.getBoundingClientRect();
-        let x = e.clientX - rect.left; let y = e.clientY - rect.top;
-        let c = Math.floor(x / pieceW); let r = Math.floor(y / pieceH);
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+        let c = Math.floor(x / pieceW);
+        let r = Math.floor(y / pieceH);
         let idx = r * PUZZLE_COLS + c;
 
         if (selected === null) {
@@ -846,20 +871,22 @@
           drawPuzzle();
         }
       });
-      
-      puzzleRestartBtn.addEventListener('click', initPuzzle);
+
+      puzzleRestartBtn.addEventListener("click", initPuzzle);
 
       openPuzzle.addEventListener("click", () => {
         openModal("modalPuzzle");
-        if (img.complete) { initPuzzle(); } 
-        else { img.onload = initPuzzle; }
+        if (img.complete) {
+          initPuzzle();
+        } else {
+          img.onload = initPuzzle;
+        }
       });
-      document.querySelector('[data-close="modalPuzzle"]').addEventListener("click", () => {
-        loveAnimation.classList.add("hidden");
-      });
-
-
-
+      document
+        .querySelector('[data-close="modalPuzzle"]')
+        .addEventListener("click", () => {
+          loveAnimation.classList.add("hidden");
+        });
 
       // ===== BLOCK BLAST (TETRIS)
       const canvas = document.getElementById("tetrisCanvas");
